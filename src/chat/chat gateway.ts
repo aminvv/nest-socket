@@ -1,4 +1,4 @@
-import { OnGatewayConnection, OnGatewayDisconnect, OnGatewayInit, WebSocketGateway, WebSocketServer } from "@nestjs/websockets";
+import { OnGatewayConnection, OnGatewayDisconnect, OnGatewayInit, SubscribeMessage, WebSocketGateway, WebSocketServer } from "@nestjs/websockets";
 import { Server } from "socket.io";
 
 @WebSocketGateway({
@@ -23,5 +23,12 @@ export class ChatGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
         const { sockets } = this.server.sockets
         console.log("clientId:" + client.id + "disconnected")
         console.log("Online User" + sockets.size);
+    }
+    @SubscribeMessage("ping")
+    pingHandler(client:any, data:any){
+        console.log("Message received from client with id"+client.id);
+        console.log("Data:", data);
+        client.emit("pong",{message:"Hello client from NEstJS"});
+        
     }
 }
